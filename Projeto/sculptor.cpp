@@ -2,24 +2,25 @@
 
 
 Sculptor::Sculptor(int _nx, int _ny, int _nz){
+    // aloca uma matriz voxel com tamanho especificado.
     nx = _nx;
-    ny = _ny;
+    ny = _ny; 
     nz = _nz;
 }
 
  void Sculptor::setColor(float r, float g, float b, float alpha){
-    v[nx][ny][nz].r = r;
-    v[nx][ny][nz].g = g;
-    v[nx][ny][nz].b = b;
-    v[nx][ny][nz].a = alpha;
+    v[nx][ny][nz].r = r; //componente correspondente à cor vermelha.
+    v[nx][ny][nz].g = g; //componente correspondente à cor verde.
+    v[nx][ny][nz].b = b; //componente correspondente à cor azul.
+    v[nx][ny][nz].a = alpha; //componente correspondente à opacidade.
  }
 
  void Sculptor::putVoxel(int x, int y, int z){
-    v[x][y][z].isOn = true;
+    v[x][y][z].isOn = true; //o voxel será exibido no escultor.
  }
 
 void Sculptor::cutVoxel(int x, int y, int z){
-    v[x][y][z].isOn = false;
+    v[x][y][z].isOn = false;//o voxel não será exibido no escultor.
 }
 
 void Sculptor::putBox(int x0, int x1, int y0, int y1, int z0, int z1){
