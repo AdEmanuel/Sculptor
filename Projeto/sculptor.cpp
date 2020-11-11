@@ -58,5 +58,49 @@ void Sculptor::cutBox(int x0, int x1, int y0, int y1, int z0, int z1){
 
 }
 
-
-
+void Sculptor::putSphere(int xcentro, int ycentro, int zcentro, int raio){
+    
+//CABE COLOCAR UMA VERIIFCAÇÃO AQUI, EX.: CASO OS PONTOS SEJAM INVÁLIDOS (PONTOS QUE NÃO SATISFAÇAM A EQUAÇÃO DA ESFERA, AVISAR "VALORES INVÁLIDOS, POR FAVOR DIGITE NOVAMENTE")
+    
+    int i,j,k; // Variáveis contadores
+    int distX, distY, distZ; // Variáveis que representam a distânica do centro da esfera para o ponto.
+    
+    for(i=0; i<nx; i++){
+        distX = static_cast<float>(((i-xcentro)/raio));
+        for(j=0; j<ny; j++){
+            distY = static_cast<float>(((j-ycentro)/raio));
+            for(k=0; k<nz; k++){
+                distZ = static_cast<float>(((k-zcentro)/raio));
+                
+               float dist = (distX*distX) + (distY*distY) + (distZ*distZ) // Todas as distâncias somadas.
+                   
+                   if(dist<=1.00){
+                       putVoxel(i,j,k); // Caso a distância seja menor que 1, isso significa que a equação é respeitada e os valores são coerentes, portanto é criado um Voxel no local.
+                   }
+            }
+        }
+    }
+}
+            
+void Sculptor::cutSphere(int xcentro, int ycentro, int zcentro, int raio){
+    //Seguindo a mesma lógica do putSphere, porém agora ao invés de chamar putVoxel será chamado a função cutVoxel, para retirar um voxel.
+    
+    int i,j,k; // Variáveis contadores
+    int distX, distY, distZ; // Variáveis que representam a distânica do centro da esfera para o ponto.
+    
+    for(i=0; i<nx; i++){
+        distX = static_cast<float>(((i-xcentro)/raio));
+        for(j=0; j<ny; j++){
+            distY = static_cast<float>(((j-ycentro)/raio));
+            for(k=0; k<nz; k++){
+                distZ = static_cast<float>(((k-zcentro)/raio));
+                
+               float dist = (distX*distX) + (distY*distY) + (distZ*distZ);
+                   
+                   if(dist<=1.00){
+                       cutVoxel(i,j,k); // Como a distância foi menor que 1, a equação foi satisfeita, e o voxel é retirado.
+                   }
+            }
+        }
+    }
+}
