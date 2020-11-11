@@ -32,11 +32,7 @@ void Sculptor::putBox(int x0, int x1, int y0, int y1, int z0, int z1){
     for(i=x0;i<x1;i++){
         for(j=y0;j<y1;j++){
             for(k=z0;k<z1;k++){
-                v[i][j][k].isOn = true;
-                v[i][i][j].r = r;
-                v[i][i][j].g = g;
-                v[i][i][j].b = b;
-                v[i][i][j].a = a;
+                putVoxel(i,j,k);
             }
         }
     }
@@ -47,18 +43,18 @@ void Sculptor::cutBox(int x0, int x1, int y0, int y1, int z0, int z1){
     for(i=x0;i<x1;i++){
         for(j=y0;j<y1;j++){
             for(k=z0;k<z1;k++){
-                v[i][j][k].isOn = false;
-                v[i][i][j].r = r;
-                v[i][i][j].g = g;
-                v[i][i][j].b = b;
-                v[i][i][j].a = a;
+                cutVoxel(i,j,k);
+                v[i][j][k].r = r;
+                v[i][j][k].g = g;
+                v[i][j][k].b = b;
+                v[i][j][k].a = a;
             }
         }
     }
 
 }
 
-void Sculptor::putSphere(int xcentro, int ycentro, int zcentro, int raio){
+void Sculptor::putSphere(int xcenter, int ycenter, int zcenter, int radius){
     
 //CABE COLOCAR UMA VERIIFCAÇÃO AQUI, EX.: CASO OS PONTOS SEJAM INVÁLIDOS (PONTOS QUE NÃO SATISFAÇAM A EQUAÇÃO DA ESFERA, AVISAR "VALORES INVÁLIDOS, POR FAVOR DIGITE NOVAMENTE")
     
@@ -66,11 +62,11 @@ void Sculptor::putSphere(int xcentro, int ycentro, int zcentro, int raio){
     int distX, distY, distZ; // Variáveis que representam a distânica do centro da esfera para o ponto.
     
     for(i=0; i<nx; i++){
-        distX = static_cast<float>(((i-xcentro)/raio));
+        distX = static_cast<float>(((i-xcenter)/radius));
         for(j=0; j<ny; j++){
-            distY = static_cast<float>(((j-ycentro)/raio));
+            distY = static_cast<float>(((j-ycenter)/radius));
             for(k=0; k<nz; k++){
-                distZ = static_cast<float>(((k-zcentro)/raio));
+                distZ = static_cast<float>(((k-zcenter)/radius));
                 
                float dist = (distX*distX) + (distY*distY) + (distZ*distZ) // Todas as distâncias somadas.
                    
@@ -82,23 +78,74 @@ void Sculptor::putSphere(int xcentro, int ycentro, int zcentro, int raio){
     }
 }
             
-void Sculptor::cutSphere(int xcentro, int ycentro, int zcentro, int raio){
+void Sculptor::cutSphere(int xcenter, int ycenter, int zcenter, int radius){
     //Seguindo a mesma lógica do putSphere, porém agora ao invés de chamar putVoxel será chamado a função cutVoxel, para retirar um voxel.
     
     int i,j,k; // Variáveis contadores
-    int distX, distY, distZ; // Variáveis que representam a distânica do centro da esfera para o ponto.
+    float distX, distY, distZ; // Variáveis que representam a distânica do centro da esfera para o ponto.
     
     for(i=0; i<nx; i++){
-        distX = static_cast<float>(((i-xcentro)/raio));
+        distX = static_cast<float>(((i-xcenter)/radius));
         for(j=0; j<ny; j++){
-            distY = static_cast<float>(((j-ycentro)/raio));
+            distY = static_cast<float>(((j-ycenter)/radius));
             for(k=0; k<nz; k++){
-                distZ = static_cast<float>(((k-zcentro)/raio));
+                distZ = static_cast<float>(((k-zcenter)/radius));
                 
                float dist = (distX*distX) + (distY*distY) + (distZ*distZ);
                    
                    if(dist<=1.00){
                        cutVoxel(i,j,k); // Como a distância foi menor que 1, a equação foi satisfeita, e o voxel é retirado.
+                       v[i][j][k].r = r;
+                       v[i][j][k].g = g;
+                       v[i][j][k].b = b;
+                       v[i][j][k].a = a;
+                   }
+            }
+        }
+    }
+}
+
+void Sculptor::putEllipsoid(int xcenter, int ycenter, int zcenter, int int rx, int ry, int rz){
+    //Para a função do putEllipsoid, a mesma equação da função putSphere pode ser utilizada, mas com a diferença que no cálcul das distâncias o valor dos raios em cada eixo é utilizado, ao invés de um único raio geral.
+    int i,j,k; // Variáveis contadores
+    float distX, distY, distZ; // Variáveis que representam a distânica do centro da esfera para o ponto.
+    
+    for(i=0; i<nx; i++){
+        distX = static_cast<float>(((i-xcenter)/rx));
+        for(j=0; j<ny; j++){
+            distY = static_cast<float>(((j-ycenter)/ry));
+            for(k=0; k<nz; k++){
+                distZ = static_cast<float>(((k-zcenter)/rz));
+                
+               float dist = (distX*distX) + (distY*distY) + (distZ*distZ) // Todas as distâncias somadas.
+                   
+                   if(dist<=1.00){
+                       putVoxel(i,j,k);
+                   }
+            }
+        }
+    }
+}
+
+void Sculptor::cutEllipsoid(int xcenter, int ycenter, int zcenter, int int rx, int ry, int rz){
+    int i,j,k; // Variáveis contadores
+    float distX, distY, distZ; // Variáveis que representam a distânica do centro da esfera para o ponto.
+    
+    for(i=0; i<nx; i++){
+        distX = static_cast<float>(((i-xcenter)/rx));
+        for(j=0; j<ny; j++){
+            distY = static_cast<float>(((j-ycenter)/ry));
+            for(k=0; k<nz; k++){
+                distZ = static_cast<float>(((k-zcenter)/rz));
+                
+               float dist = (distX*distX) + (distY*distY) + (distZ*distZ) // Todas as distâncias somadas.
+                   
+                   if(dist<=1.00){
+                       cutVoxel(i,j,k);
+                       v[i][j][k].r = r;
+                       v[i][j][k].g = g;
+                       v[i][j][k].b = b;
+                       v[i][j][k].a = a;
                    }
             }
         }
